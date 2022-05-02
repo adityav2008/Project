@@ -1,0 +1,30 @@
+---
+  - hosts: all
+    tasks:
+      - name: "Get Server Hostname"
+        command: hostname
+        register: command_output
+      - debug:
+          var: command_output.stdout_lines
+
+
+      - name: "Get Disk Status"
+        command: "df -h"
+        register: command_output
+      - debug:
+          var: command_output.stdout_lines
+
+      - name: install zabbix-agent
+        yum: name=zabbix-agent state=latest
+        register: zabbix_agent_output
+      - debug:
+          var: zabbix_agent_output.stdout_lines
+
+      - name: copy zabbix configuration file
+        copy: src=./template/zabbix_agentd.conf dest=/etc/zabbix_agentd.conf seuser=system_u
+        notify:
+        - Start Zabbix-agent
+    
+    handlers:
+      - name: Start zabbix-agent
+        service: name=zabbix-agent state=started enabled=yes

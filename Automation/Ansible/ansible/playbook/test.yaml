@@ -1,0 +1,15 @@
+- hosts: dev
+  become: true
+  tasks:
+  - name: Install Apache
+    yum: name=httpd state=present
+  - name: Start Apache
+    service: name=httpd state=started
+  - name: Install Nginx Repo
+    yum: name=epel-release state=present
+  - name: Install Nginx
+    yum: name=nginx state=present
+  - name: Start Nginx
+    service: name=nginx state=started
+  - name: Allow Apache and Nginx on firewall
+    command: "firewall-cmd --permanent --zone=public --add-service=http && firewall-cmd --permanent --zone=public --add-service=https && firewall-cmd --reload"

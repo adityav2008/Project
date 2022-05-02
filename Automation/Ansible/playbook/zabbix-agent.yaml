@@ -1,0 +1,35 @@
+---
+  - hosts: all
+    tasks:
+
+      - name: Uninstall epel repo
+        yum: name=epel-release state=absent
+        register: epel_repo_uninstall_output 
+      - debug:
+          var: epel_repo_uninstall_output.stdout_lines
+
+      - name: install epel repo
+        yum: name=epel-release state=latest
+        register: epel_repo_install_output 
+      - debug:
+          var: epel_repo_install_output.stdout_lines
+
+      - name: Uninstall zabbix-agent
+        yum: name=zabbix-agent state=absent
+        register: zabbix_agent_absent_output
+      - debug:
+          var: zabbix_agent_absent_output.stdout_lines
+
+      - name: install zabbix-agent
+        yum: name=zabbix-agent state=present update_cache=yes
+        register: zabbix_agent_output
+      - debug:
+          var: zabbix_agent_output.stdout_lines
+
+      - name: copy zabbix configuration file
+        copy: src=../template/zabbix_agentd.conf dest=/etc/zabbix/zabbix_agentd.conf seuser=system_u
+        notify: Start Zabbix-agent
+    
+    handlers:
+      - name: Start zabbix-agent
+        service: name=zabbix-agent state=started enabled=yes    

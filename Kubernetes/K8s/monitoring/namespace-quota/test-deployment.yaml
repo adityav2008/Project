@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-quota-demo-1
+  namespace: quota-pod-example
+spec:
+  selector:
+    matchLabels:
+      purpose: quota-demo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        purpose: quota-demo
+    spec:
+      containers:
+      - name: pod-quota-demo-1
+        image: nginx
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-quota-demo-2
+  namespace: quota-pod-example
+spec:
+  selector:
+    matchLabels:
+      purpose: quota-demo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        purpose: quota-demo
+    spec:
+      containers:
+      - name: pod-quota-demo-2
+        image: nginx
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-quota-demo-3
+  namespace: quota-pod-example
+spec:
+  selector:
+    matchLabels:
+      purpose: quota-demo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        purpose: quota-demo
+    spec:
+      containers:
+      - name: pod-quota-demo-3
+        image: nginx
