@@ -1,0 +1,35 @@
+- hosts: webserver
+  tasks:
+  - name: ensure httpd service started
+    ansible.builtin.service:
+        name: httpd
+        state: restarted
+        enabled: yes
+  
+  - name: stop and disable firewall service
+    ansible.builtin.service:
+      name: firewalld
+      state: stopped
+      enabled: no
+
+- hosts: loadbalancer
+  tasks:
+    - name: ensure nginx service started
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+        enabled: yes
+    
+    - name: stop and disable firewall service
+      ansible.builtin.service:
+        name: firewalld
+        state: stopped
+        enabled: no
+
+- hosts: database
+  tasks:
+  - name: ensure mysql service started
+    ansible.builtin.service:
+        name: mysqld
+        state: restarted
+        enabled: yes

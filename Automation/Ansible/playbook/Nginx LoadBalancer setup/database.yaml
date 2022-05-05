@@ -1,0 +1,20 @@
+---
+  - hosts: database
+    tasks: 
+      # - name: download mysql-server repo
+      #   command: curl -sSLO https://dev.mysql.com/get/mysql80-community-release-el7-5.noarch.rpm
+
+      # - name: verify repo 
+      #   command: md5sum mysql80-community-release-el7-5.noarch.rpm
+
+      # - name: install mysql-server repo
+      #   command: rpm -ivh mysql80-community-release-el7-5.noarch.rpm
+
+      - name: install mysql server
+        yum: name=mysql-server state=present update_cache=yes
+
+      - name: ensure mysql service started
+        ansible.builtin.service:
+          name: mysqld
+          state: started
+          enabled: yes

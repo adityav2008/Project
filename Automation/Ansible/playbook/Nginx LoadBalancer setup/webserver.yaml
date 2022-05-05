@@ -1,0 +1,59 @@
+---
+- hosts: webserver
+  tasks:
+    - name: enable EPEL repo
+      yum: name=epel-release state=present update_cache=yes
+    
+    - name: enable CentOS Relase SCL Repo
+      yum: name=centos-release-scl state=present update_cache=yes
+
+    - name: install apache webserver
+      yum: name={{item}} state=present update_cache=yes
+      with_items:
+        - httpd
+        - python-pip
+        - python-virtualenv
+        - mod_wsgi
+        - net-tools
+
+    - name: ensure httpd service started
+      ansible.builtin.service:
+          name: httpd
+          state: started
+          enabled: yes
+    
+    - name: stop and disable firewall service
+      ansible.builtin.service:
+        name: firewalld
+        state: stopped
+        enabled: no
+
+    - name: ensure mod wsgi module is enabled
+      apache2_module: name=wsgi state=present
+      notify: restart apache
+      
+    # - name: copy demo app source
+    #   copy: src=demo/app dest=/var/www/demo mode=0755
+    #   notify: restart apache
+
+    # - name: copy apache vhost config
+    #   copy: src=demo/demo.conf dest=/etc/httpd/conf.d mode=0755
+    #   notify: restart apache
+
+    # - name: setup python virtual environment
+    #   pip: requirements=/var/www/demo/app/requirements.txt virtualenv=/var/www/demo/.venv
+    #   notify: restart apache
+
+    - name: copy demo php app source
+      copy: src=demo/php/ dest=/var/www/php mode=0755
+      notify: restart apache
+   
+    - name: copy apache vhost config
+      copy: src=demo/php.example.com.conf dest=/etc/httpd/conf.d mode=0755
+      notify: restart apache
+      
+  handlers:
+    - name: restart apache
+      ansible.builtin.service:
+        name: httpd
+        state: restarted

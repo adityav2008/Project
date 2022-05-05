@@ -1,0 +1,8 @@
+---
+  - hosts: all
+    tasks:
+      - name: "Get Hostname of each machine"
+        command: hostname
+        register: server_hostname
+      - debug:
+          var: server_hostname.stdout_lines
